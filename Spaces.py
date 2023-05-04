@@ -1,9 +1,15 @@
+from os import system
+
 MOVEMENT = {"east" : 0,
 			"north" : 1,
 			"up" : 2,
 			"west" : 3,
 			"south" : 4,
 			"down" : 5}
+
+def clear():
+	#system("cls")
+	system("clear")
 
 class Space():
 	def __init__(self):
@@ -24,6 +30,7 @@ class Space():
 					player.position[direction] += 1
 				else:
 					player.position[direction - 3] -= 1
+				clear()
 			else:
 				print(f"You can't move {direction} from here.")
 		else:
@@ -50,6 +57,8 @@ class Interactable(Space):
 					if item == self.usable_item:
 						print(item)
 						player.inventory.remove(item)
+						self.state = "ACTION"
+						print(self.description())
 						self.state = "ACTIVATED"
 						spaces[self.affected_room].state = "ACTIVE"
 					else:
@@ -57,6 +66,8 @@ class Interactable(Space):
 				else:
 					print(f"You don't have {item} in your inventory.")
 			else:
+				self.state = "ACTION"
+				print(self.description())
 				self.state = "ACTIVATED"
 				spaces[self.affected_room].state = "ACTIVE"
 		elif self.state == "ACTIVATED":
@@ -86,11 +97,12 @@ class Dispenser(Interactable):
 		player.inventory.append(self.result_item)
 
 spaces = {}
-
+"""
 s = Interactable()
 s.affected_room = (0,2,0)
 s.allowed_movements.append("north")
 s.descriptions["UNACTIVATED"] = "unused"
+s.descriptions["ACTION"] = "The room is used"
 s.descriptions["ACTIVATED"] = "used"
 spaces[(0,0,0)] = s
 
@@ -113,5 +125,25 @@ spaces[(0,2,0)] = s
 """
 
 s = Space()
+s.allowed_movements.append(["north", "south"])
+s.description = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
+spaces[(0,0,0)] = s
+
+s = Dispenser()
 s.allowed_movements.append("north")
-"""
+s.affected_room = (0,-1,0)
+s.descriptions["UNACTIVATED"] = "You see an uncomfortable looking bed. A thin blanket is neatly spread across the top."
+s.descriptions["ACTION"] = "You pull off the blanket to reveal a key."
+s.descriptions["ACTIVATED"] = "You see an uncomfortable looking bed. A thin blanket is crumpled on top of it."
+s.result_item = "key"
+spaces[(0,-1,0)] = s
+
+s = Door()
+s.allowed_movements.append("south")
+s.affected_room = (0,1,0)
+s.usable_item = "key"
+s.descriptions["UNACTIVATED"] = "You see a locked iron door. Despite this seeming to be a prison cell, there is a keyhole on the inside."
+s.descriptions["ACTION"] = "You unlock the door, but you can't pull the key out of the keyhole."
+s.descriptions["ACTIVATED"] = "You see an opened iron door. It leads into a dark hallway."
+s.blocked_movement = "north"
+spaces[(0,1,0)] = s

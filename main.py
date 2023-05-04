@@ -1,6 +1,6 @@
-from Spaces import spaces
+from Spaces import spaces, clear
 import pickle
-from os import remove, system
+from os import remove
 from os.path import exists
 
 ACTIONS = ("menu", "interact", "inventory", "move")
@@ -64,10 +64,6 @@ def game_loop():
 			case "menu":
 				menu_options.append("resume")
 
-def clear():
-	system("cls")
-	#system("clear")
-
 player = Player()
 def main(player):
 	clear()
@@ -80,13 +76,13 @@ def main(player):
 | |      | | \ \  | |__| | | |__| | 
 |_|      |_|  \_\  \____/   \____/ 
 """)
-		choice = valid_input(menu_options, "Menu options: ")
+		choice = valid_input(menu_options, "Input option:")
 		match choice:
 			case "new":
 				if exists("game.dat"):
 					remove("game.dat")
 				clear()
-				print("You wake up and remember nothing besides a goal: to obtain the Prog.")
+				print("You wake up and remember nothing besides a goal: to obtain the Prog.\n")
 				game_loop()
 			case "quit":
 				print("Thanks for playing!")
