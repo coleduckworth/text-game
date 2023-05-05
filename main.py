@@ -1,9 +1,7 @@
-from Spaces import spaces, clear
+from Spaces import spaces, clear, Interactable
 import pickle
 from os import remove
 from os.path import exists
-
-ACTIONS = ("menu", "interact", "inventory", "move")
 
 menu_options = ["new", "quit"]
 if exists("game.dat"):
@@ -52,8 +50,11 @@ def game_loop():
 	choice = None
 	while choice != "menu":
 		space = spaces.get(tuple(player.position), "There's not a space at that location. Code's broken.")
-		print(space.description() + "\n")
-		choice = valid_input(ACTIONS)
+		print("\n" + space.description() + "\n")
+		actions = ["menu", "inventory", "move"]
+		if isinstance(space, Interactable):
+			actions.append("interact")
+		choice = valid_input(actions)
 		match choice:
 			case "move":
 				space.move(player)

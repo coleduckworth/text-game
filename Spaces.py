@@ -8,8 +8,8 @@ MOVEMENT = {"east" : 0,
 			"down" : 5}
 
 def clear():
-	#system("cls")
-	system("clear")
+	system("cls")
+	#system("clear")
 
 class Space():
 	def __init__(self):
@@ -40,6 +40,7 @@ class Interactable(Space):
 	def __init__(self):
 		super().__init__()
 		self.usable_item = ""
+		self.answer = ""
 		self.descriptions = {}
 		self.affected_room = (0, 0, 0)
 		self.state = "UNACTIVATED"
@@ -55,7 +56,6 @@ class Interactable(Space):
 				item = input("You can use an item here.\nWhat item would you like to 'use'?\n").lower()
 				if item in player.inventory:
 					if item == self.usable_item:
-						print(item)
 						player.inventory.remove(item)
 						self.state = "ACTION"
 						print(self.description())
@@ -65,6 +65,15 @@ class Interactable(Space):
 						print(f"You can't use {item} here.")
 				else:
 					print(f"You don't have {item} in your inventory.")
+			elif self.answer:
+				guess = input("You can input text here.\nInput text:\n").lower()
+				if guess == self.answer:
+					self.state = "ACTION"
+					print(self.description())
+					self.state = "ACTIVATED"
+					spaces[self.affected_room].state = "ACTIVE"
+				else:
+					print("Your response was erased and nothing occurred.")
 			else:
 				self.state = "ACTION"
 				print(self.description())
@@ -73,8 +82,8 @@ class Interactable(Space):
 		elif self.state == "ACTIVATED":
 			print("There's nothing to do here.")
 		if self.state == "ACTIVE":
-			self.action(player)
 			self.state = "ACTIVATED"
+			self.action(player)
 	
 	def action(self, player):
 		pass
@@ -97,36 +106,10 @@ class Dispenser(Interactable):
 		player.inventory.append(self.result_item)
 
 spaces = {}
-"""
-s = Interactable()
-s.affected_room = (0,2,0)
-s.allowed_movements.append("north")
-s.descriptions["UNACTIVATED"] = "unused"
-s.descriptions["ACTION"] = "The room is used"
-s.descriptions["ACTIVATED"] = "used"
-spaces[(0,0,0)] = s
-
-s = Door()
-s.affected_room = (0,1,0)
-s.allowed_movements.append("south")
-s.blocked_movement = "north"
-s.descriptions["UNACTIVATED"] = "door"
-s.descriptions["ACTIVATED"] = "opened door"
-spaces[(0,1,0)] = s
-
-s = Dispenser()
-s.allowed_movements.append("south")
-s.interactable = False
-s.descriptions["UNACTIVATED"] = "other unused"
-s.descriptions["ACTIVE"] = "There's a stick."
-s.descriptions["ACTIVATED"] = "other used"
-s.result_item = "stick"
-spaces[(0,2,0)] = s
-"""
 
 s = Space()
-s.allowed_movements.append(["north", "south"])
-s.description = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
+s.allowed_movements = ["north", "south"]
+s.descriptions = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
 spaces[(0,0,0)] = s
 
 s = Dispenser()
@@ -144,6 +127,17 @@ s.affected_room = (0,1,0)
 s.usable_item = "key"
 s.descriptions["UNACTIVATED"] = "You see a locked iron door. Despite this seeming to be a prison cell, there is a keyhole on the inside."
 s.descriptions["ACTION"] = "You unlock the door, but you can't pull the key out of the keyhole."
-s.descriptions["ACTIVATED"] = "You see an opened iron door. It leads into a dark hallway."
+s.descriptions["ACTIVATED"] = "You see an opened iron door."
 s.blocked_movement = "north"
 spaces[(0,1,0)] = s
+
+s = Space()
+s.allowed_movements = ["east", "west", "south"]
+s.descriptions = "You see a dim corridor lit only by a glow coming from the cracks around a door to the east. The corrider also extends to the west, ending at an umarked door.\nThe door to the south connects to a prison cell."
+spaces[(0,2,0)] = s
+
+s = Door()
+s.allowed_movements = ["west"]
+s.interactable = False
+s.descriptions["UNACTIVATED"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab and noticably lacks a handle."
+s.descriptions["ACTIVE"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab and noticably lacks a handle.\nThe "
