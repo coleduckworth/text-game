@@ -20,7 +20,6 @@ class Player():
 	def position(self, new_position):
 		self.__position = new_position
 
-
 def valid_input(answer_set, prompt = "Input action:"):
 	while (command := input(f"Possible inputs: {answer_set}\n{prompt} ").lower()) not in answer_set:
 		print("Invalid input.")
@@ -83,7 +82,7 @@ def main(player):
 				if exists("game.dat"):
 					remove("game.dat")
 				clear()
-				print("You wake up and remember nothing besides a goal: to obtain the Prog.\n")
+				print("You wake up and remember nothing besides a goal: to obtain the Prog.")
 				game_loop()
 			case "quit":
 				print("Thanks for playing!")

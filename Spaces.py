@@ -79,7 +79,7 @@ class Interactable(Space):
 				print(self.description())
 				self.state = "ACTIVATED"
 				spaces[self.affected_room].state = "ACTIVE"
-		elif self.state == "ACTIVATED":
+		elif self.state == "ACTIVATED" or not self.interactable:
 			print("There's nothing to do here.")
 		if self.state == "ACTIVE":
 			self.state = "ACTIVATED"
@@ -133,11 +133,27 @@ spaces[(0,1,0)] = s
 
 s = Space()
 s.allowed_movements = ["east", "west", "south"]
-s.descriptions = "You see a dim corridor lit only by a glow coming from the cracks around a door to the east. The corrider also extends to the west, ending at an umarked door.\nThe door to the south connects to a prison cell."
+s.descriptions = "You see a dim corridor lit only by a glow coming from the cracks around a door to the east. The corrider also extends to the west, ending at a door with a plaque.\nThe door to the south connects to a prison cell."
 spaces[(0,2,0)] = s
 
 s = Door()
 s.allowed_movements = ["west"]
 s.interactable = False
 s.descriptions["UNACTIVATED"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab and noticably lacks a handle."
-s.descriptions["ACTIVE"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab and noticably lacks a handle.\nThe "
+s.descriptions["ACTIVE"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab save for a small crevasse that your hand may fit into.\n"
+s.descriptions["ACTION"] = "You put your hand into the crevasse and pull the heavy slab to the side, flooding the corridor with green light."
+s.descriptions["ACTIVATED"] = "You see a cast iron slab slid to the side, revealing an entryway. Green light floods in from a stone room."
+s.blocked_movement = "east"
+spaces[(1,2,0)] = s
+
+s = Door()
+s.allowed_movements = ["east"]
+s.affected_room = (-1,2,0)
+s.answer = "green"
+s.descriptions["UNACTIVATED"] = "You see a wooden door with a plaque on it. The plaque is only barely illuminated from the light coming from the other end of the hall.\nThe plaque says:\nWhat color does my friend to the east shine with?"
+s.descriptions["ACTION"] = "The plaque disintegrates and the door swings open."
+s.descriptions["ACTIVATED"] = "You see an opened wooden door. The area is dimly lit by the light coming from the other end of the hall."
+s.blocked_movement = "west"
+spaces[(-1,2,0)] = s
+
+s = 
