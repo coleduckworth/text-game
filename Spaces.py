@@ -39,8 +39,8 @@ class Space():
 class Interactable(Space):
 	def __init__(self):
 		super().__init__()
-		self.usable_item = ""
-		self.answer = ""
+		self.usable_items = []
+		self.answers = []
 		self.descriptions = {}
 		self.affected_room = (0, 0, 0)
 		self.state = "UNACTIVATED"
@@ -51,35 +51,36 @@ class Interactable(Space):
 	
 	def interact(self, player):
 		if self.state == "UNACTIVATED" and self.interactable:
-			if self.usable_item:
+			if self.usable_items:
 				print(f"Your inventory:\n{player.inventory}")
 				item = input("You can use an item here.\nWhat item would you like to 'use'?\n").lower()
 				if item in player.inventory:
-					if item == self.usable_item:
+					if item in self.usable_items:
 						player.inventory.remove(item)
-						self.state = "ACTION"
-						print(self.description())
-						self.state = "ACTIVATED"
-						spaces[self.affected_room].state = "ACTIVE"
+						self.usable_items.remove(item)
+						if self.usable_items:
+							print(self.descriptions["PROGRESS"])
+						else:
+							print(self.descriptions["ACTION"])
+							self.state = "ACTIVATED"
+							spaces[self.affected_room].state = "ACTIVE"
 					else:
 						print(f"You can't use {item} here.")
 				else:
 					print(f"You don't have {item} in your inventory.")
-			elif self.answer:
+			elif self.answers:
 				guess = input("You can input text here.\nInput text:\n").lower()
-				if guess == self.answer:
-					self.state = "ACTION"
-					print(self.description())
+				if guess in self.answers:
+					print(self.descriptions["ACTION"])
 					self.state = "ACTIVATED"
 					spaces[self.affected_room].state = "ACTIVE"
 				else:
 					print("Your response was erased and nothing occurred.")
 			else:
-				self.state = "ACTION"
-				print(self.description())
+				print(self.descriptions["ACTION"])
 				self.state = "ACTIVATED"
 				spaces[self.affected_room].state = "ACTIVE"
-		elif self.state == "ACTIVATED" or not self.interactable:
+		elif self.state == "ACTIVATED" or (not self.interactable and self.state == "ACTIVE"):
 			print("There's nothing to do here.")
 		if self.state == "ACTIVE":
 			self.state = "ACTIVATED"
@@ -124,7 +125,7 @@ spaces[(0,-1,0)] = s
 s = Door()
 s.allowed_movements.append("south")
 s.affected_room = (0,1,0)
-s.usable_item = "key"
+s.usable_items = ["key"]
 s.descriptions["UNACTIVATED"] = "You see a locked iron door. Despite this seeming to be a prison cell, there is a keyhole on the inside."
 s.descriptions["ACTION"] = "You unlock the door, but you can't pull the key out of the keyhole."
 s.descriptions["ACTIVATED"] = "You see an opened iron door."
@@ -142,18 +143,76 @@ s.interactable = False
 s.descriptions["UNACTIVATED"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab and noticably lacks a handle."
 s.descriptions["ACTIVE"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab save for a small crevasse that your hand may fit into.\n"
 s.descriptions["ACTION"] = "You put your hand into the crevasse and pull the heavy slab to the side, flooding the corridor with green light."
-s.descriptions["ACTIVATED"] = "You see a cast iron slab slid to the side, revealing an entryway. Green light floods in from a stone room."
+s.descriptions["ACTIVATED"] = "You see a cast iron slab slid to the side, revealing an entryway. Light floods in from a painted room."
 s.blocked_movement = "east"
 spaces[(1,2,0)] = s
 
 s = Door()
 s.allowed_movements = ["east"]
 s.affected_room = (-1,2,0)
-s.answer = "green"
+s.answers = ["green"]
 s.descriptions["UNACTIVATED"] = "You see a wooden door with a plaque on it. The plaque is only barely illuminated from the light coming from the other end of the hall.\nThe plaque says:\nWhat color does my friend to the east shine with?"
 s.descriptions["ACTION"] = "The plaque disintegrates and the door swings open."
 s.descriptions["ACTIVATED"] = "You see an opened wooden door. The area is dimly lit by the light coming from the other end of the hall."
 s.blocked_movement = "west"
 spaces[(-1,2,0)] = s
 
-s = 
+s = Interactable()
+s.allowed_movements = ["east"]
+s.affected_room = (1,2,0)
+s.answers = ["a shadow", "shadow", "shadows"]
+s.descriptions["UNACTIVATED"] = "You see a small pad of paper on a table. Written upon it is a riddle:\nI can only live where there is light but if a light shines on me, I die. What am I?"
+s.descriptions["ACTION"] = "All text is removed from the pad and you can hear metal grinding against stone behind you."
+s.descriptions["ACTIVATED"] = "You see a small pad of paper on a table. Upon closer inspection it is blank."
+spaces[(-2,2,0)] = s
+
+s = Interactable()
+s.allowed_movements = ["north, east, south, west"]
+s.affected_room = (2,2,0)
+s.answers = ["red"]
+s.descriptions["UNACTIVATED"] = "You see a small room completely colored yellow. A singular light source is embedded in the ceiling above you glowing bright green.\nYou can see a door to your north, a dim hallway to your west, and two other brightly colored rooms to your east and south.\nA plaque on the wall reads:\nWhat color am I painted?"
+s.descriptions["ACTION"] = "The plaque disappears and a seemingly yellow key falls from the ceiling. The light source changes to shine white."
+s.descriptions["ACTIVATED"] = "You see a small room completely colored red. A singular light source is embedded in the ceiling above you glowing bright white.\nYou can see a door to your north, a dim hallway to your west, and two other brightly colored rooms to your east and south."
+s.result_item = "red key"
+spaces[(2,2,0)] = s
+
+s = Interactable()
+s.allowed_movements = ["south, west"]
+s.affected_room = (3,2,0)
+s.answers = ["blue"]
+s.descriptions["UNACTIVATED"] = "You see a small room completely colored purple. A singular light source is embedded in the ceiling above you glowing bright red.\nYou can see two other brightly colored rooms to your west and south.\nA plaque on the wall reads:\nWhat color am I painted?"
+s.descriptions["ACTION"] = "The plaque disappears and a seemingly purple key falls from the ceiling. The light source changes to shine white."
+s.descriptions["ACTIVATED"] = "You see a small room completely colored blue. A singular light source is embedded in the ceiling above you glowing bright white.\nYou can see two other brightly colored rooms to your west and south."
+s.result_item = "blue key"
+spaces[(3,2,0)] = s
+
+s = Interactable()
+s.allowed_movements = ["north, east"]
+s.affected_room = (2,1,0)
+s.answers = ["green"]
+s.descriptions["UNACTIVATED"] = "You see a small room completely colored cyan. A singular light source is embedded in the ceiling above you glowing bright blue.\nYou can see two other brightly colored rooms to your north and east.\nA plaque on the wall reads:\nWhat color am I painted?"
+s.descriptions["ACTION"] = "The plaque disappears and a seemingly cyan key falls from the ceiling. The light source changes to shine white."
+s.descriptions["ACTIVATED"] = "You see a small room completely colored green. A singular light source is embedded in the ceiling above you glowing bright white.\nYou can see two other brightly colored rooms to your north and east."
+s.result_item = "green key"
+spaces[(2,1,0)] = s
+
+s = Interactable()
+s.allowed_movements = ["north, west"]
+s.affected_room = (3,1,0)
+s.answers = ["white"]
+s.descriptions["UNACTIVATED"] = "You see a small room completely colored purple. A singular light source is embedded in the ceiling above you glowing bright purple.\nYou can see two other brightly colored rooms to your north and west.\nA plaque on the wall reads:\nWhat color am I painted?"
+s.descriptions["ACTION"] = "The plaque disappears and a seemingly purple key falls from the ceiling. The light source changes to shine white."
+s.descriptions["ACTIVATED"] = "You see a small room completely colored white. A singular light source is embedded in the ceiling above you glowing bright white.\nYou can see two other brightly colored rooms to your north and west."
+s.result_item = "white key"
+spaces[(3,1,0)] = s
+
+s = Door()
+s.allowed_movements = ["south"]
+s.affected_room = (2,3,0)
+s.usable_items = ["red key", "blue key", "green key", "white key"]
+s.descriptions["UNACTIVATED"] = "You see a simple metal door with four keyholes."
+s.descriptions["PROGRESS"] = "The key turns in a keyhole and is unable to be removed."
+s.descriptions["ACTION"] = "The door unlocks and you push it open."
+s.descriptions["ACTIVATED"] = "You see an open door. Beyond the door is a completely dark room."
+s.blocked_movement = "north"
+spaces[(2,3,0)] = s
