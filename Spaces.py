@@ -108,7 +108,7 @@ class Dispenser(Interactable):
 
 spaces = {}
 
-s = Space()
+s = Dispenser()
 s.allowed_movements = ["north", "south"]
 s.descriptions = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
 spaces[(0,0,0)] = s
@@ -216,3 +216,17 @@ s.descriptions["ACTION"] = "The door unlocks and you push it open."
 s.descriptions["ACTIVATED"] = "You see an open door. Beyond the door is a completely dark room."
 s.blocked_movement = "north"
 spaces[(2,3,0)] = s
+
+s = Space()
+s.allowed_movements = ["down"]
+s.descriptions = "You fall into a pit hidden in the darkness."
+spaces[(2,4,0)] = s
+
+for i in range(8):
+	s = Space()
+	s.allowed_movements = ["down"]
+	s.descriptions = "You fall in a pitch black abyss."
+	spaces[(2,4,0 - i)] = s
+
+s = Space()
+s.allowed_movements = [""]
