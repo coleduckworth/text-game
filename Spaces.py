@@ -221,12 +221,13 @@ s = Space()
 s.allowed_movements = ["down"]
 s.descriptions = "You fall into a pit hidden in the darkness."
 spaces[(2,4,0)] = s
-
-for i in range(8):
+"""
+for i in range(len("Message"[::-1])):
 	s = Space()
 	s.allowed_movements = ["down"]
-	s.descriptions = "You fall in a pitch black abyss."
+	s.descriptions = f"You fall in a pitch black abyss. You see in the darkness the letter \"{("Message"[-1-i])}\""
 	spaces[(2,4,0 - i)] = s
 
 s = Space()
 s.allowed_movements = [""]
+"""
