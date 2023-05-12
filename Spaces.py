@@ -8,8 +8,8 @@ MOVEMENT = {"east" : 0,
 			"down" : 5}
 
 def clear():
-	system("cls")
-	#system("clear")
+	#system("cls")
+	system("clear")
 
 class Space():
 	def __init__(self):
