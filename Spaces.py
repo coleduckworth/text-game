@@ -108,7 +108,7 @@ class Dispenser(Interactable):
 
 spaces = {}
 
-s = Dispenser()
+s = Space()
 s.allowed_movements = ["north", "south"]
 s.descriptions = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
 spaces[(0,0,0)] = s
