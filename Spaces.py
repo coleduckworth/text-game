@@ -80,7 +80,7 @@ class Interactable(Space):
 				print(self.descriptions["ACTION"])
 				self.state = "ACTIVATED"
 				spaces[self.affected_room].state = "ACTIVE"
-		elif self.state == "ACTIVATED" or (not self.interactable and self.state == "ACTIVE"):
+		elif self.state == "ACTIVATED" or not (self.interactable and self.state == "ACTIVE"):
 			print("There's nothing to do here.")
 		if self.state == "ACTIVE":
 			self.state = "ACTIVATED"
@@ -167,7 +167,7 @@ s.descriptions["ACTIVATED"] = "You see a small pad of paper on a table. Upon clo
 spaces[(-2,2,0)] = s
 
 s = Interactable()
-s.allowed_movements = ["north, east, south, west"]
+s.allowed_movements = ["north", "east", "south", "west"]
 s.affected_room = (2,2,0)
 s.answers = ["red"]
 s.descriptions["UNACTIVATED"] = "You see a small room completely colored yellow. A singular light source is embedded in the ceiling above you glowing bright green.\nYou can see a door to your north, a dim hallway to your west, and two other brightly colored rooms to your east and south.\nA plaque on the wall reads:\nWhat color am I painted?"
@@ -177,7 +177,7 @@ s.result_item = "red key"
 spaces[(2,2,0)] = s
 
 s = Interactable()
-s.allowed_movements = ["south, west"]
+s.allowed_movements = ["south", "west"]
 s.affected_room = (3,2,0)
 s.answers = ["blue"]
 s.descriptions["UNACTIVATED"] = "You see a small room completely colored purple. A singular light source is embedded in the ceiling above you glowing bright red.\nYou can see two other brightly colored rooms to your west and south.\nA plaque on the wall reads:\nWhat color am I painted?"
@@ -187,7 +187,7 @@ s.result_item = "blue key"
 spaces[(3,2,0)] = s
 
 s = Interactable()
-s.allowed_movements = ["north, east"]
+s.allowed_movements = ["north", "east"]
 s.affected_room = (2,1,0)
 s.answers = ["green"]
 s.descriptions["UNACTIVATED"] = "You see a small room completely colored cyan. A singular light source is embedded in the ceiling above you glowing bright blue.\nYou can see two other brightly colored rooms to your north and east.\nA plaque on the wall reads:\nWhat color am I painted?"
@@ -197,7 +197,7 @@ s.result_item = "green key"
 spaces[(2,1,0)] = s
 
 s = Interactable()
-s.allowed_movements = ["north, west"]
+s.allowed_movements = ["north", "west"]
 s.affected_room = (3,1,0)
 s.answers = ["white"]
 s.descriptions["UNACTIVATED"] = "You see a small room completely colored purple. A singular light source is embedded in the ceiling above you glowing bright purple.\nYou can see two other brightly colored rooms to your north and west.\nA plaque on the wall reads:\nWhat color am I painted?"
