@@ -84,8 +84,6 @@ def main(player):
 	clear()
 	choice = None
 	while choice != "quit" and not win:
-		print(win)
-		print(choice)
 		print(""" _____    _____     ____     ____
 |  __ \  |  __ \   / __ \   / ___\ 
 | |__) | | |__) | | |  | | | | __
