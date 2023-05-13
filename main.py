@@ -81,9 +81,9 @@ def game_loop():
 
 player = Player()
 def main(player):
-	clear()
 	choice = None
 	while choice != "quit" and not win:
+		clear()
 		print(""" _____    _____     ____     ____
 |  __ \  |  __ \   / __ \   / ___\ 
 | |__) | | |__) | | |  | | | | __
