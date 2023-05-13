@@ -3,14 +3,15 @@ import pickle
 from os import remove
 from os.path import exists
 
+win = False
 menu_options = ["new", "quit"]
 if exists("game.dat"):
 	menu_options.append("save", "load")
 
 class Player():
 	def __init__(self):
-		self.__position = [0, 0, 0]
-		self.inventory = []
+		self.__position = [2, 5, 0]
+		self.inventory = ["plank"]
 	
 	@property
 	def position(self):
@@ -45,30 +46,46 @@ def load():
 	except FileNotFoundError:
 		print("Game file not found")
 
+def win_screen():
+	clear()
+	print("You walk into the darkness and stop. You can sense the Prog. You reach out and grab it. Your fingers wrap around it and, for a moment, your mind is filled with unbearable ecstasy.\nAnd then...\nNothing.\nYou realize that you can never feel that way again.\nYour life becomes so devoid of purpose that you black out.\n")
+	input("PRESS ENTER")
+	clear()
+	print("Thank you for playing PROG.\n\tCREDITS\n\nCreated by Cole Duckworth\n\nSpecial thanks to Mr. Simonsen\n")
+	input("PRESS ENTER")
+	clear()
+
 def game_loop():
 	choice = None
 	while choice != "menu":
 		space = spaces.get(tuple(player.position), "There's not a space at that location. Code's broken.")
-		print("\n" + space.description() + "\n")
-		actions = ["menu", "inventory", "move"]
-		if isinstance(space, Interactable):
-			actions.append("interact")
-		choice = valid_input(actions)
-		match choice:
-			case "move":
-				space.move(player)
-			case "interact":
-				space.interact(player)
-			case "inventory":
-				print(f"Your inventory:\n{player.inventory}")
-			case "menu":
-				menu_options.append("resume")
+		if space.description() == "PROG":
+			choice = "menu"
+			global win
+			win = True
+		else:
+			print("\n" + space.description() + "\n")
+			actions = ["menu", "inventory", "move"]
+			if isinstance(space, Interactable):
+				actions.append("interact")
+			choice = valid_input(actions)
+			match choice:
+				case "move":
+					space.move(player)
+				case "interact":
+					space.interact(player)
+				case "inventory":
+					print(f"Your inventory:\n{player.inventory}")
+				case "menu":
+					menu_options.append("resume")
 
 player = Player()
 def main(player):
 	clear()
 	choice = None
-	while choice != "quit":
+	while choice != "quit" and not win:
+		print(win)
+		print(choice)
 		print(""" _____    _____     ____     ____
 |  __ \  |  __ \   / __ \   / ___\ 
 | |__) | | |__) | | |  | | | | __
@@ -95,6 +112,8 @@ def main(player):
 			case "resume":
 				game_loop()
 				menu_options.pop()
+	if win:
+		win_screen()
 
 if __name__ == "__main__":
 	main(player)

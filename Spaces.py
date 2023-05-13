@@ -8,8 +8,8 @@ MOVEMENT = {"east" : 0,
 			"down" : 5}
 
 def clear():
-	#system("cls")
-	system("clear")
+	system("cls")
+	#system("clear")
 
 class Space():
 	def __init__(self):
@@ -80,9 +80,11 @@ class Interactable(Space):
 				print(self.descriptions["ACTION"])
 				self.state = "ACTIVATED"
 				spaces[self.affected_room].state = "ACTIVE"
-		elif self.state == "ACTIVATED" or not (self.interactable and self.state == "ACTIVE"):
+		elif self.state == "ACTIVATED" or not (( not self.interactable) and self.state == "ACTIVE"):
 			print("There's nothing to do here.")
 		if self.state == "ACTIVE":
+			if not self.interactable:
+				print(self.descriptions["ACTION"])
 			self.state = "ACTIVATED"
 			self.action(player)
 	
@@ -92,10 +94,10 @@ class Interactable(Space):
 class Door(Interactable):
 	def __init__(self):
 		super().__init__()
-		self.blocked_movement = ""
+		self.blocked_movements = []
 
 	def action(self, player):
-		self.allowed_movements.append(self.blocked_movement)
+		self.allowed_movements += self.blocked_movements
 
 class Dispenser(Interactable):
 	def __init__(self):
@@ -109,8 +111,17 @@ class Dispenser(Interactable):
 spaces = {}
 
 s = Space()
+s.descriptions = "PROG"
+spaces[(2,6,0)] = s
+
+s = Dispenser()
 s.allowed_movements = ["north", "south"]
-s.descriptions = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
+s.affected_room = (0,0,0)
+s.answers = ["pitfall"]
+s.descriptions["UNACTIVATED"] = "You see a cold stone cell. There's a door to the north and a wooden bed to the south.\nA sign on the wall says:\nState the word of the elevator."
+s.descriptions["ACTION"] = "A wooden plank begins to extrude from the sign and falls to the ground."
+s.descriptions["ACTIVATED"] = "You see a cold stone cell. There's a door to the north and a wooden bed to the south."
+s.result_item = "plank"
 spaces[(0,0,0)] = s
 
 s = Dispenser()
@@ -129,7 +140,7 @@ s.usable_items = ["key"]
 s.descriptions["UNACTIVATED"] = "You see a locked iron door. Despite this seeming to be a prison cell, there is a keyhole on the inside."
 s.descriptions["ACTION"] = "You unlock the door, but you can't pull the key out of the keyhole."
 s.descriptions["ACTIVATED"] = "You see an opened iron door."
-s.blocked_movement = "north"
+s.blocked_movements = ["north"]
 spaces[(0,1,0)] = s
 
 s = Space()
@@ -144,7 +155,7 @@ s.descriptions["UNACTIVATED"] = "You see a door surrounded by a pulsating green 
 s.descriptions["ACTIVE"] = "You see a door surrounded by a pulsating green light. The door is a flat cast iron slab save for a small crevasse that your hand may fit into.\n"
 s.descriptions["ACTION"] = "You put your hand into the crevasse and pull the heavy slab to the side, flooding the corridor with green light."
 s.descriptions["ACTIVATED"] = "You see a cast iron slab slid to the side, revealing an entryway. Light floods in from a painted room."
-s.blocked_movement = "east"
+s.blocked_movements = ["east"]
 spaces[(1,2,0)] = s
 
 s = Door()
@@ -154,7 +165,7 @@ s.answers = ["green"]
 s.descriptions["UNACTIVATED"] = "You see a wooden door with a plaque on it. The plaque is only barely illuminated from the light coming from the other end of the hall.\nThe plaque says:\nWhat color does my friend to the east shine with?"
 s.descriptions["ACTION"] = "The plaque disintegrates and the door swings open."
 s.descriptions["ACTIVATED"] = "You see an opened wooden door. The area is dimly lit by the light coming from the other end of the hall."
-s.blocked_movement = "west"
+s.blocked_movements = ["west"]
 spaces[(-1,2,0)] = s
 
 s = Interactable()
@@ -214,20 +225,43 @@ s.descriptions["UNACTIVATED"] = "You see a simple metal door with four keyholes.
 s.descriptions["PROGRESS"] = "The key turns in a keyhole and is unable to be removed."
 s.descriptions["ACTION"] = "The door unlocks and you push it open."
 s.descriptions["ACTIVATED"] = "You see an open door. Beyond the door is a completely dark room."
-s.blocked_movement = "north"
+s.blocked_movements = ["north"]
 spaces[(2,3,0)] = s
 
 s = Space()
-s.allowed_movements = ["down"]
-s.descriptions = "You fall into a pit hidden in the darkness."
+s.allowed_movements = ["south", "north"]
+s.descriptions = "You see pitch black around you. To the south you can see light coming in from a door."
 spaces[(2,4,0)] = s
-"""
-for i in range(len("Message"[::-1])):
+
+s = Door()
+s.allowed_movements = ["down"]
+s.affected_room = (2,5,0)
+s.usable_items = ["plank"]
+s.descriptions["UNACTIVATED"] = "You fall into a pit hidden in the darkness."
+s.descriptions["ACTION"] = "You quickly place the plank across the pit and climb back on."
+s.descriptions["ACTIVATED"] = "You see a pitch black room. Light comes in from a door to the south."
+s.blocked_movements = ["north", "south"]
+spaces[(2,5,0)] = s
+
+pitPuzzleAnswer = "Pitfall"
+for i in range(len(pitPuzzleAnswer)):
 	s = Space()
 	s.allowed_movements = ["down"]
-	s.descriptions = f"You fall in a pitch black abyss. You see in the darkness the letter \"{("Message"[-1-i])}\""
-	spaces[(2,4,0 - i)] = s
+	s.descriptions = f"You fall in a pitch black abyss. You see in the darkness the letter \"{pitPuzzleAnswer[-1-i]}\""
+	spaces[(2,5,-1 - i)] = s
 
 s = Space()
-s.allowed_movements = [""]
-"""
+s.allowed_movements = ["south"]
+s.descriptions = "You stumble around in the dark and feel what you think is a broken wooden elevator."
+spaces[(2,5,-1 - len(pitPuzzleAnswer))] = s
+
+s = Space()
+s.allowed_movements = ["north", "up"]
+s.descriptions = "You stumble around in the dark and feel that you are at the base of some kind of stairway.\nYou can feel a sign saying:\nEMERGENCY STAIRS"
+spaces[(2,4,-1 - len(pitPuzzleAnswer))] = s
+
+for i in range(len(pitPuzzleAnswer)):
+	s = Space()
+	s.allowed_movements = ["up", "down"]
+	s.descriptions = "You stumble on some stairs."
+	spaces[(2,4,-1-i)] = s
