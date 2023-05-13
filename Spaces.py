@@ -166,7 +166,7 @@ s.descriptions["ACTION"] = "All text is removed from the pad and you can hear me
 s.descriptions["ACTIVATED"] = "You see a small pad of paper on a table. Upon closer inspection it is blank."
 spaces[(-2,2,0)] = s
 
-s = Interactable()
+s = Dispenser()
 s.allowed_movements = ["north", "east", "south", "west"]
 s.affected_room = (2,2,0)
 s.answers = ["red"]
@@ -176,7 +176,7 @@ s.descriptions["ACTIVATED"] = "You see a small room completely colored red. A si
 s.result_item = "red key"
 spaces[(2,2,0)] = s
 
-s = Interactable()
+s = Dispenser()
 s.allowed_movements = ["south", "west"]
 s.affected_room = (3,2,0)
 s.answers = ["blue"]
@@ -186,7 +186,7 @@ s.descriptions["ACTIVATED"] = "You see a small room completely colored blue. A s
 s.result_item = "blue key"
 spaces[(3,2,0)] = s
 
-s = Interactable()
+s = Dispenser()
 s.allowed_movements = ["north", "east"]
 s.affected_room = (2,1,0)
 s.answers = ["green"]
@@ -196,7 +196,7 @@ s.descriptions["ACTIVATED"] = "You see a small room completely colored green. A 
 s.result_item = "green key"
 spaces[(2,1,0)] = s
 
-s = Interactable()
+s = Dispenser()
 s.allowed_movements = ["north", "west"]
 s.affected_room = (3,1,0)
 s.answers = ["white"]
