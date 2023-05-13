@@ -10,8 +10,8 @@ if exists("game.dat"):
 
 class Player():
 	def __init__(self):
-		self.__position = [2, 5, 0]
-		self.inventory = ["plank"]
+		self.__position = [0, 0, 0]
+		self.inventory = []
 	
 	@property
 	def position(self):
