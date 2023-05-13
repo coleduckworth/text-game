@@ -4,9 +4,9 @@ from os import remove
 from os.path import exists
 
 win = False
-menu_options = ["new", "quit"]
+menu_options = ["new", "save", "quit"]
 if exists("game.dat"):
-	menu_options.append("save", "load")
+	menu_options.append("load")
 
 class Player():
 	def __init__(self):
@@ -51,7 +51,7 @@ def win_screen():
 	print("You walk into the darkness and stop. You can sense the Prog. You reach out and grab it. Your fingers wrap around it and, for a moment, your mind is filled with unbearable ecstasy.\nAnd then...\nNothing.\nYou realize that you can never feel that way again.\nYour life becomes so devoid of purpose that you black out.\n")
 	input("PRESS ENTER")
 	clear()
-	print("Thank you for playing PROG.\n\tCREDITS\n\nCreated by Cole Duckworth\n\nSpecial thanks to Mr. Simonsen\n")
+	print("Thank you for playing PROG.\n\tCREDITS\n\nCreated by Cole Duckworth\n\nSpecial thanks to Mr. Simonsen\n\n\tPlay testers\nTobias Platt\nForrest Draper\nMichael Duckworth\nAnnekke Hale\nLuke Lowry")
 	input("PRESS ENTER")
 	clear()
 
